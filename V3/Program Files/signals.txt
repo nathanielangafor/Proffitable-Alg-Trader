@@ -1,0 +1,5 @@
+{'message': 'Sample entry for buy & sell signal'}
+{'asset': 'RETA', 'asset_type': {'asset_type': 'stock', 'gate_bypass': ['momentum_gate']}, 'asset_price': 35.02, 'order_type': 'long', 'check_time': '2022-12-28 16:09:04', 'market_sentiment': {'fearAndGreedData': {'score': 31.4571428571429, 'rating': 'fear', 'timestamp': '2022-12-28T20:59:58+00:00', 'previous_close': 38.3142857142857, 'previous_1_week': 37.5714285714286, 'previous_1_month': 59.8, 'previous_1_year': 62.971428571428575}}, 'gates': {}, 'decision': True}
+{'asset': 'RETA', 'asset_type': {'asset_type': 'stock', 'gate_bypass': ['momentum_gate']}, 'order_type': 'long', 'sell_data': {'profit_target': 36.070600000000006, 'status': 1, 'asset_price': 35.02}, 'buy_data': {'flag': 'buy', 'price': 35.02, 'status': 0}}
+
+{'message': 'Real data starts here.'}
