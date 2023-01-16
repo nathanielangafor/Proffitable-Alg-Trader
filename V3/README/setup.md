@@ -15,9 +15,10 @@ Installation and Setup:
     3. Run the program. Once the dependencies have been installed and the config files have been edited, the program can be launched by running the appropriate command in the terminal.
 
 # Node install statements
-cd Program\ files/node_modules & npm install ws
+```cd Program\ files/node_modules & npm install ws```
 
 # Python install statements
+```
 pip3 install asyncio
 pip3 install datetime
 pip3 install pandas
@@ -39,5 +40,5 @@ python3 Reporter/discordNotifier.py
 python3 Market\ Monitor/buySide.py
 python3 Market\ Monitor/sellSide.py
 python3 Database/dataManager.py
-
+```
 *Run these commands from the root directory (V3/)*
