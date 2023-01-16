@@ -35,10 +35,10 @@ pip3 install alpaca-py
 pip3 install email-validator
 
 python3 api.py
-node Brokers/Mux/muxServer.js
+node Brokers/Mux/muxServer.js - required
 python3 Reporter/discordNotifier.py
-python3 Market\ Monitor/buySide.py
-python3 Market\ Monitor/sellSide.py
-python3 Database/dataManager.py
+python3 Market\ Monitor/buySide.py - required
+python3 Market\ Monitor/sellSide.py - required
+python3 Database/dataManager.py - required
 ```
 *Run these commands from the root directory (V3/)*
