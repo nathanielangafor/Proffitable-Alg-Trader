@@ -31,8 +31,6 @@ pip3 install discord.py
 pip3 install cryptography
 pip3 install bs4
 pip3 install python-multipart
-pip3 install alpaca-py
-pip3 install email-validator
 
 python3 api.py
 node Brokers/Mux/muxServer.js - required
