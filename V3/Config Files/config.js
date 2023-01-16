@@ -1,0 +1,1070 @@
+// Chain configuration
+const assets = {
+    USDC: {
+        "address": "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8",
+        "assetId": 0,
+        "shortAddress": "",
+        "longAddress": "",
+        "longFundingRate": .01,
+        "shortFundingRate": .01,
+    },
+    USDT: {
+        "address": "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
+        "assetId": 1,
+        "shortAddress": "",
+        "longAddress": "",
+        "longFundingRate": .01,
+        "shortFundingRate": .01,
+    },
+    DAI: {
+        "address": "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1",
+        "assetId": 2,
+        "shortAddress": "",
+        "longAddress": "",
+        "longFundingRate": .01,
+        "shortFundingRate": .01,
+    },
+    ETH: {
+        "address": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+        "assetId": 3,
+        "shortAddress": "000300000000000000000000",
+        "longAddress": "000301000000000000000000",
+        "longFundingRate": .03,
+        "shortFundingRate": .01,
+    },
+    BTC: {
+        "address": "0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
+        "assetId": 4,
+        "shortAddress": "000400000000000000000000",
+        "longAddress": "000401000000000000000000",
+        "longFundingRate": .008,
+        "shortFundingRate": .01,
+    },
+    AVAX: {
+        "address": "0x0000000000000000000000000000000000000000",
+        "assetId": 5,
+        "shortAddress": "000500000000000000000000",
+        "longAddress": "000501000000000000000000",
+        "longFundingRate": .03,
+        "shortFundingRate": .01,
+    },
+    BNB: {
+        "address": "0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
+        "assetId": 6,
+        "shortAddress": "000600000000000000000000",
+        "longAddress": "000601000000000000000000",
+        "longFundingRate": .03,
+        "shortFundingRate": .01,
+    },
+    FTM: {
+        "address": "0xd42785d323e608b9e99fa542bd8b1000d4c2df37",
+        "assetId": 7,
+        "shortAddress": "000700000000000000000000",
+        "longAddress": "000701000000000000000000",
+        "longFundingRate": .03,
+        "shortFundingRate": .01,
+    },
+    BUSD: {
+        "address": "0x31190254504622cefdfa55a7d3d272e6462629a2",
+        "assetId":  8,
+        "shortAddress": "",
+        "longAddress": "",
+        "longFundingRate": .01,
+        "shortFundingRate": .01,
+    },
+}
+
+var muxRouterContract = "0xa19fD5aB6C8DCffa2A295F78a5Bb4aC543AAF5e3"
+var muxReferralCode = "0x76616d0000000000000000000000000000000000000000000000000000000000"
+const muxRouterAbi = [{
+    "anonymous": false,
+    "inputs": [{
+        "indexed": true,
+        "internalType": "address",
+        "name": "newBroker",
+        "type": "address"
+    }],
+    "name": "AddBroker",
+    "type": "event"
+}, {
+    "anonymous": false,
+    "inputs": [{
+        "indexed": true,
+        "internalType": "address",
+        "name": "newRebalancer",
+        "type": "address"
+    }],
+    "name": "AddRebalancer",
+    "type": "event"
+}, {
+    "anonymous": false,
+    "inputs": [{
+        "indexed": false,
+        "internalType": "uint64",
+        "name": "orderId",
+        "type": "uint64"
+    }, {
+        "indexed": false,
+        "internalType": "enum OrderType",
+        "name": "orderType",
+        "type": "uint8"
+    }, {
+        "indexed": false,
+        "internalType": "bytes32[3]",
+        "name": "orderData",
+        "type": "bytes32[3]"
+    }],
+    "name": "CancelOrder",
+    "type": "event"
+}, {
+    "anonymous": false,
+    "inputs": [{
+        "indexed": false,
+        "internalType": "uint64",
+        "name": "orderId",
+        "type": "uint64"
+    }, {
+        "indexed": false,
+        "internalType": "enum OrderType",
+        "name": "orderType",
+        "type": "uint8"
+    }, {
+        "indexed": false,
+        "internalType": "bytes32[3]",
+        "name": "orderData",
+        "type": "bytes32[3]"
+    }],
+    "name": "FillOrder",
+    "type": "event"
+}, {
+    "anonymous": false,
+    "inputs": [{
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+    }, {
+        "indexed": true,
+        "internalType": "uint64",
+        "name": "orderId",
+        "type": "uint64"
+    }, {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "assetId",
+        "type": "uint8"
+    }, {
+        "indexed": false,
+        "internalType": "uint96",
+        "name": "rawAmount",
+        "type": "uint96"
+    }, {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "isAdding",
+        "type": "bool"
+    }],
+    "name": "NewLiquidityOrder",
+    "type": "event"
+}, {
+    "anonymous": false,
+    "inputs": [{
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "subAccountId",
+        "type": "bytes32"
+    }, {
+        "indexed": true,
+        "internalType": "uint64",
+        "name": "orderId",
+        "type": "uint64"
+    }, {
+        "indexed": false,
+        "internalType": "uint96",
+        "name": "collateral",
+        "type": "uint96"
+    }, {
+        "indexed": false,
+        "internalType": "uint96",
+        "name": "size",
+        "type": "uint96"
+    }, {
+        "indexed": false,
+        "internalType": "uint96",
+        "name": "price",
+        "type": "uint96"
+    }, {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "profitTokenId",
+        "type": "uint8"
+    }, {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "flags",
+        "type": "uint8"
+    }, {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "deadline",
+        "type": "uint32"
+    }],
+    "name": "NewPositionOrder",
+    "type": "event"
+}, {
+    "anonymous": false,
+    "inputs": [{
+        "indexed": true,
+        "internalType": "address",
+        "name": "rebalancer",
+        "type": "address"
+    }, {
+        "indexed": true,
+        "internalType": "uint64",
+        "name": "orderId",
+        "type": "uint64"
+    }, {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "tokenId0",
+        "type": "uint8"
+    }, {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "tokenId1",
+        "type": "uint8"
+    }, {
+        "indexed": false,
+        "internalType": "uint96",
+        "name": "rawAmount0",
+        "type": "uint96"
+    }, {
+        "indexed": false,
+        "internalType": "uint96",
+        "name": "maxRawAmount1",
+        "type": "uint96"
+    }, {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "userData",
+        "type": "bytes32"
+    }],
+    "name": "NewRebalanceOrder",
+    "type": "event"
+}, {
+    "anonymous": false,
+    "inputs": [{
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "subAccountId",
+        "type": "bytes32"
+    }, {
+        "indexed": true,
+        "internalType": "uint64",
+        "name": "orderId",
+        "type": "uint64"
+    }, {
+        "indexed": false,
+        "internalType": "uint96",
+        "name": "rawAmount",
+        "type": "uint96"
+    }, {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "profitTokenId",
+        "type": "uint8"
+    }, {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "isProfit",
+        "type": "bool"
+    }],
+    "name": "NewWithdrawalOrder",
+    "type": "event"
+}, {
+    "anonymous": false,
+    "inputs": [{
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+    }, {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+    }],
+    "name": "OwnershipTransferred",
+    "type": "event"
+}, {
+    "anonymous": false,
+    "inputs": [{
+        "indexed": false,
+        "internalType": "bool",
+        "name": "isPaused",
+        "type": "bool"
+    }],
+    "name": "PauseLiquidityOrder",
+    "type": "event"
+}, {
+    "anonymous": false,
+    "inputs": [{
+        "indexed": false,
+        "internalType": "bool",
+        "name": "isPaused",
+        "type": "bool"
+    }],
+    "name": "PausePositionOrder",
+    "type": "event"
+}, {
+    "anonymous": false,
+    "inputs": [{
+        "indexed": true,
+        "internalType": "address",
+        "name": "pendingOwner",
+        "type": "address"
+    }],
+    "name": "PrepareToTransferOwnership",
+    "type": "event"
+}, {
+    "anonymous": false,
+    "inputs": [{
+        "indexed": true,
+        "internalType": "address",
+        "name": "broker",
+        "type": "address"
+    }],
+    "name": "RemoveBroker",
+    "type": "event"
+}, {
+    "anonymous": false,
+    "inputs": [{
+        "indexed": true,
+        "internalType": "address",
+        "name": "rebalancer",
+        "type": "address"
+    }],
+    "name": "RemoveRebalancer",
+    "type": "event"
+}, {
+    "anonymous": false,
+    "inputs": [{
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "oldLockPeriod",
+        "type": "uint32"
+    }, {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "newLockPeriod",
+        "type": "uint32"
+    }],
+    "name": "SetLiquidityLockPeriod",
+    "type": "event"
+}, {
+    "anonymous": false,
+    "inputs": [{
+        "indexed": true,
+        "internalType": "address",
+        "name": "newMaintainer",
+        "type": "address"
+    }],
+    "name": "SetMaintainer",
+    "type": "event"
+}, {
+    "anonymous": false,
+    "inputs": [{
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "marketOrderTimeout",
+        "type": "uint32"
+    }, {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "maxLimitOrderTimeout",
+        "type": "uint32"
+    }],
+    "name": "SetOrderTimeout",
+    "type": "event"
+}, {
+    "anonymous": false,
+    "inputs": [{
+        "indexed": false,
+        "internalType": "address",
+        "name": "newReferralManager",
+        "type": "address"
+    }],
+    "name": "SetReferralManager",
+    "type": "event"
+}, {
+    "inputs": [],
+    "name": "_nativeUnwrapper",
+    "outputs": [{
+        "internalType": "contract INativeUnwrapper",
+        "name": "",
+        "type": "address"
+    }],
+    "stateMutability": "view",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "address",
+        "name": "newBroker",
+        "type": "address"
+    }],
+    "name": "addBroker",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "address",
+        "name": "newRebalancer",
+        "type": "address"
+    }],
+    "name": "addRebalancer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+    }],
+    "name": "brokers",
+    "outputs": [{
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+    }],
+    "stateMutability": "view",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "uint64",
+        "name": "orderId",
+        "type": "uint64"
+    }],
+    "name": "cancelOrder",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}, {
+    "inputs": [],
+    "name": "claimBrokerGasRebate",
+    "outputs": [{
+        "internalType": "uint256",
+        "name": "rawAmount",
+        "type": "uint256"
+    }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "bytes32",
+        "name": "subAccountId",
+        "type": "bytes32"
+    }, {
+        "internalType": "uint256",
+        "name": "collateralAmount",
+        "type": "uint256"
+    }],
+    "name": "depositCollateral",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "uint64",
+        "name": "orderId",
+        "type": "uint64"
+    }, {
+        "internalType": "uint96",
+        "name": "assetPrice",
+        "type": "uint96"
+    }, {
+        "internalType": "uint96",
+        "name": "mlpPrice",
+        "type": "uint96"
+    }, {
+        "internalType": "uint96",
+        "name": "currentAssetValue",
+        "type": "uint96"
+    }, {
+        "internalType": "uint96",
+        "name": "targetAssetValue",
+        "type": "uint96"
+    }],
+    "name": "fillLiquidityOrder",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "uint64",
+        "name": "orderId",
+        "type": "uint64"
+    }, {
+        "internalType": "uint96",
+        "name": "collateralPrice",
+        "type": "uint96"
+    }, {
+        "internalType": "uint96",
+        "name": "assetPrice",
+        "type": "uint96"
+    }, {
+        "internalType": "uint96",
+        "name": "profitAssetPrice",
+        "type": "uint96"
+    }],
+    "name": "fillPositionOrder",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "uint64",
+        "name": "orderId",
+        "type": "uint64"
+    }, {
+        "internalType": "uint96",
+        "name": "price0",
+        "type": "uint96"
+    }, {
+        "internalType": "uint96",
+        "name": "price1",
+        "type": "uint96"
+    }],
+    "name": "fillRebalanceOrder",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "uint64",
+        "name": "orderId",
+        "type": "uint64"
+    }, {
+        "internalType": "uint96",
+        "name": "collateralPrice",
+        "type": "uint96"
+    }, {
+        "internalType": "uint96",
+        "name": "assetPrice",
+        "type": "uint96"
+    }, {
+        "internalType": "uint96",
+        "name": "profitAssetPrice",
+        "type": "uint96"
+    }],
+    "name": "fillWithdrawalOrder",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "uint64",
+        "name": "orderId",
+        "type": "uint64"
+    }],
+    "name": "getOrder",
+    "outputs": [{
+        "internalType": "bytes32[3]",
+        "name": "",
+        "type": "bytes32[3]"
+    }, {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+    }],
+    "stateMutability": "view",
+    "type": "function"
+}, {
+    "inputs": [],
+    "name": "getOrderCount",
+    "outputs": [{
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+    }],
+    "stateMutability": "view",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "uint256",
+        "name": "begin",
+        "type": "uint256"
+    }, {
+        "internalType": "uint256",
+        "name": "end",
+        "type": "uint256"
+    }],
+    "name": "getOrders",
+    "outputs": [{
+        "internalType": "bytes32[3][]",
+        "name": "orderArray",
+        "type": "bytes32[3][]"
+    }, {
+        "internalType": "uint256",
+        "name": "totalCount",
+        "type": "uint256"
+    }],
+    "stateMutability": "view",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "address",
+        "name": "pool",
+        "type": "address"
+    }, {
+        "internalType": "address",
+        "name": "mlp",
+        "type": "address"
+    }, {
+        "internalType": "address",
+        "name": "weth",
+        "type": "address"
+    }, {
+        "internalType": "address",
+        "name": "nativeUnwrapper",
+        "type": "address"
+    }],
+    "name": "initialize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}, {
+    "inputs": [],
+    "name": "isLiquidityOrderPaused",
+    "outputs": [{
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+    }],
+    "stateMutability": "view",
+    "type": "function"
+}, {
+    "inputs": [],
+    "name": "isPositionOrderPaused",
+    "outputs": [{
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+    }],
+    "stateMutability": "view",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "bytes32",
+        "name": "subAccountId",
+        "type": "bytes32"
+    }, {
+        "internalType": "uint8",
+        "name": "profitAssetId",
+        "type": "uint8"
+    }, {
+        "internalType": "uint96",
+        "name": "collateralPrice",
+        "type": "uint96"
+    }, {
+        "internalType": "uint96",
+        "name": "assetPrice",
+        "type": "uint96"
+    }, {
+        "internalType": "uint96",
+        "name": "profitAssetPrice",
+        "type": "uint96"
+    }],
+    "name": "liquidate",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}, {
+    "inputs": [],
+    "name": "liquidityLockPeriod",
+    "outputs": [{
+        "internalType": "uint32",
+        "name": "",
+        "type": "uint32"
+    }],
+    "stateMutability": "view",
+    "type": "function"
+}, {
+    "inputs": [],
+    "name": "maintainer",
+    "outputs": [{
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+    }],
+    "stateMutability": "view",
+    "type": "function"
+}, {
+    "inputs": [],
+    "name": "marketOrderTimeout",
+    "outputs": [{
+        "internalType": "uint32",
+        "name": "",
+        "type": "uint32"
+    }],
+    "stateMutability": "view",
+    "type": "function"
+}, {
+    "inputs": [],
+    "name": "maxLimitOrderTimeout",
+    "outputs": [{
+        "internalType": "uint32",
+        "name": "",
+        "type": "uint32"
+    }],
+    "stateMutability": "view",
+    "type": "function"
+}, {
+    "inputs": [],
+    "name": "nextOrderId",
+    "outputs": [{
+        "internalType": "uint64",
+        "name": "",
+        "type": "uint64"
+    }],
+    "stateMutability": "view",
+    "type": "function"
+}, {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [{
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+    }],
+    "stateMutability": "view",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "bool",
+        "name": "isPositionOrderPaused_",
+        "type": "bool"
+    }, {
+        "internalType": "bool",
+        "name": "isLiquidityOrderPaused_",
+        "type": "bool"
+    }],
+    "name": "pause",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "uint8",
+        "name": "assetId",
+        "type": "uint8"
+    }, {
+        "internalType": "uint96",
+        "name": "rawAmount",
+        "type": "uint96"
+    }, {
+        "internalType": "bool",
+        "name": "isAdding",
+        "type": "bool"
+    }],
+    "name": "placeLiquidityOrder",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "bytes32",
+        "name": "subAccountId",
+        "type": "bytes32"
+    }, {
+        "internalType": "uint96",
+        "name": "collateralAmount",
+        "type": "uint96"
+    }, {
+        "internalType": "uint96",
+        "name": "size",
+        "type": "uint96"
+    }, {
+        "internalType": "uint96",
+        "name": "price",
+        "type": "uint96"
+    }, {
+        "internalType": "uint8",
+        "name": "profitTokenId",
+        "type": "uint8"
+    }, {
+        "internalType": "uint8",
+        "name": "flags",
+        "type": "uint8"
+    }, {
+        "internalType": "uint32",
+        "name": "deadline",
+        "type": "uint32"
+    }],
+    "name": "placePositionOrder",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "bytes32",
+        "name": "subAccountId",
+        "type": "bytes32"
+    }, {
+        "internalType": "uint96",
+        "name": "collateralAmount",
+        "type": "uint96"
+    }, {
+        "internalType": "uint96",
+        "name": "size",
+        "type": "uint96"
+    }, {
+        "internalType": "uint96",
+        "name": "price",
+        "type": "uint96"
+    }, {
+        "internalType": "uint8",
+        "name": "profitTokenId",
+        "type": "uint8"
+    }, {
+        "internalType": "uint8",
+        "name": "flags",
+        "type": "uint8"
+    }, {
+        "internalType": "uint32",
+        "name": "deadline",
+        "type": "uint32"
+    }, {
+        "internalType": "bytes32",
+        "name": "referralCode",
+        "type": "bytes32"
+    }],
+    "name": "placePositionOrder2",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "uint8",
+        "name": "tokenId0",
+        "type": "uint8"
+    }, {
+        "internalType": "uint8",
+        "name": "tokenId1",
+        "type": "uint8"
+    }, {
+        "internalType": "uint96",
+        "name": "rawAmount0",
+        "type": "uint96"
+    }, {
+        "internalType": "uint96",
+        "name": "maxRawAmount1",
+        "type": "uint96"
+    }, {
+        "internalType": "bytes32",
+        "name": "userData",
+        "type": "bytes32"
+    }],
+    "name": "placeRebalanceOrder",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "bytes32",
+        "name": "subAccountId",
+        "type": "bytes32"
+    }, {
+        "internalType": "uint96",
+        "name": "rawAmount",
+        "type": "uint96"
+    }, {
+        "internalType": "uint8",
+        "name": "profitTokenId",
+        "type": "uint8"
+    }, {
+        "internalType": "bool",
+        "name": "isProfit",
+        "type": "bool"
+    }],
+    "name": "placeWithdrawalOrder",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+    }],
+    "name": "rebalancers",
+    "outputs": [{
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+    }],
+    "stateMutability": "view",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "uint8",
+        "name": "tokenId",
+        "type": "uint8"
+    }, {
+        "internalType": "uint96",
+        "name": "muxTokenAmount",
+        "type": "uint96"
+    }],
+    "name": "redeemMuxToken",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}, {
+    "inputs": [],
+    "name": "referralManager",
+    "outputs": [{
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+    }],
+    "stateMutability": "view",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "address",
+        "name": "broker",
+        "type": "address"
+    }],
+    "name": "removeBroker",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "address",
+        "name": "rebalancer",
+        "type": "address"
+    }],
+    "name": "removeRebalancer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}, {
+    "inputs": [],
+    "name": "renounceBroker",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}, {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}, {
+    "inputs": [],
+    "name": "renounceRebalancer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "uint32",
+        "name": "newLiquidityLockPeriod",
+        "type": "uint32"
+    }],
+    "name": "setLiquidityLockPeriod",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "address",
+        "name": "newMaintainer",
+        "type": "address"
+    }],
+    "name": "setMaintainer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "uint32",
+        "name": "marketOrderTimeout_",
+        "type": "uint32"
+    }, {
+        "internalType": "uint32",
+        "name": "maxLimitOrderTimeout_",
+        "type": "uint32"
+    }],
+    "name": "setOrderTimeout",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "address",
+        "name": "newReferralManager",
+        "type": "address"
+    }],
+    "name": "setReferralManager",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}, {
+    "inputs": [],
+    "name": "takeOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+    }],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "uint32",
+        "name": "stableUtilization",
+        "type": "uint32"
+    }, {
+        "internalType": "uint8[]",
+        "name": "unstableTokenIds",
+        "type": "uint8[]"
+    }, {
+        "internalType": "uint32[]",
+        "name": "unstableUtilizations",
+        "type": "uint32[]"
+    }, {
+        "internalType": "uint96[]",
+        "name": "unstablePrices",
+        "type": "uint96[]"
+    }],
+    "name": "updateFundingState",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}, {
+    "inputs": [{
+        "internalType": "bytes32",
+        "name": "subAccountId",
+        "type": "bytes32"
+    }],
+    "name": "withdrawAllCollateral",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}]
+
+module.exports = {
+    muxRouterAbi,
+    muxRouterContract,
+    muxReferralCode,
+    assets
+}
