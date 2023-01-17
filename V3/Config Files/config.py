@@ -66,7 +66,80 @@ gate_settings = {
             'allowed_fear_and_greed': ['Fear', 'Extreme Fear', 'Neutral']
         }, 
         'stocks': {
-
+gate_settings = {
+    'ema_gate': {
+        # Determine if atr should be included
+        'long_criteria': True,
+        'short_criteria': True
+    },
+    'cci_gate': {
+        # Values to compare CCI to
+        'long_criteria': 100,
+        'short_criteria': -100
+    },
+    'rsi_gate': {
+        # Values to compare RSI to
+        'long_criteria': 65,
+        'short_criteria': 35
+    },
+    'trend_gate': {
+        # Ratio minimum for long / shorts in last 200 periods
+        'long_criteria': 30,
+        'short_criteria': 30
+    },
+    'cloud_gate': {
+        # Percent minimum for size of current ichimoku cloud
+        'long_criteria': .1,
+        'short_criteria': .1
+    },
+    'fundamental_gate': {
+        'crypto': {
+            'allowed_fear_and_greed': ['Fear', 'Extreme Fear', 'Neutral']
+        }, 
+        'stocks': {
+            'required_fields': {
+                'pe_gate': ['P/E', 'Forward P/E'],
+                'eps_gate': ['EPS (ttm)', 'EPS next Y', 'EPS next Q', 'EPS this Y', 'EPS growth next Y', 'EPS next 5Y', 'EPS past 5Y', 'EPS Q/Q'],
+                'sales_gate': ['Sales', 'Sales past 5Y', 'P/S'],
+                'book_gate': ['P/B', 'Book/sh'],
+                'return_gate': ['ROI', 'ROA', 'ROE'],
+                'cash_gate': ['P/C', 'Cash/sh', 'P/FCF'],
+                'qc_ratio_gate': ['Quick Ratio', 'Current Ratio'],
+                'margin_gate': ['Oper. Margin', 'Gross Margin', 'Profit Margin'],
+                'debt_gate': ['Debt/Eq', 'LT Debt/Eq']
+            },
+            'field_data': {
+                'pe': 20,
+                'min_forward_pe': 10,
+                'max_forward_pe': 20,
+                'eps_ttm': 0,
+                'eps_this_y': 0,
+                'eps_next_q': 0,
+                'eps_next_y': 0,
+                'eps_growth_next_y': 0,
+                'eps_next_5y': 0,
+                'eps_past_5y': 0,
+                'eps_q_q': 0,
+                'sales_past_5y': 0,
+                'sales': 0,
+                'ps': 4,
+                'book_sh': 0,
+                'pb_max': 3,
+                'pb_min': 0,
+                'roa': 5,
+                'roe': 15,
+                'roi': 10,
+                'cash_sh': 1,
+                'pc': 10,
+                'pfcf': 15,
+                'quick_ratio': 1,
+                'current_ratio': 1,
+                'operating_margin': 0,
+                'profit_margin': 0,
+                'gross_margin': 0,
+                'debt_eq': 1,
+                'lt_debt_eq': 1   
+            }      
         }
     },
     'momentum_gate': {
