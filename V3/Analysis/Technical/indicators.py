@@ -27,35 +27,47 @@ def price(asset, asset_type):
             'data': data returned from the function.
             'msg': a string indicating the status of the operation. It can be either 'success' or 'error'.
     """
-    while True:
-        try:
-            # Get price for leveraged crypto asset
-            if asset_type == 'crypto' and asset in config.leveragable_crypto:
-                # Get the list of assets from the API
-                assets = scraper.get(config.crypto['price_url']).json()['assets']
-                # Find the asset with the desired symbol
-                for item in assets:
-                    if item['symbol'] == asset:
-                        price = float(item['price'])
-            # Get price for normal crypto asset
-            if asset_type == 'crypto' and asset in config.non_leveragable_crypto:
-                coins = scraper.get('https://api.coinlore.net/api/tickers/?limit=10000').json()['data']
-                for coin in coins:
-                    if coin['symbol'] == asset:
-                        markets = scraper.get('https://api.coinlore.net/api/coin/markets/?id=' + coin['id']).json()
-                        for market in markets:
-                            if market['name'] == 'Binance' and market['quote'] == 'USDT':
-                                price = float(market['price'])
-            # Get price for stock asset
-            if asset_type == 'stock':
-                price = float(scraper.get(f'https://api.wsj.net/api/dylan/quotes/v2/comp/quoteByDialect?dialect=official&needed=CompositeTrading|BluegrassChannels&MaxInstrumentMatches=1&accept=application/json&EntitlementToken=cecc4267a0194af89ca343805a3e57af&ckey=cecc4267a0&dialects=Charting&id=Stock-US-{asset}%2CStock-US-LIVE%2CStock-US-ADIL%2CCryptoCurrency-US-BTCUSD%2CStock-US-KALA').json()['InstrumentResponses'][0]['Matches'][0]['CompositeTrading']['Last']['Price']['Value'])
-            return {
-                'data': price,
-                'msg': 'success'
-            }
-        except:
-            time.sleep(3)
-            pass
+    try:
+        for x in range(5):
+            try:
+                # Get price for leveraged crypto asset
+                if asset_type == 'crypto' and asset in config.leveragable_crypto:
+                    # Get the list of assets from the API
+                    assets = scraper.get(config.crypto['price_url']).json()['assets']
+                    # Find the asset with the desired symbol
+                    for item in assets:
+                        if item['symbol'] == asset:
+                            price = float(item['price'])
+                # Get price for normal crypto asset
+                if asset_type == 'crypto' and asset in config.non_leveragable_crypto:
+                    coins = scraper.get('https://api.coinlore.net/api/tickers/?limit=10000').json()['data']
+                    for coin in coins:
+                        if coin['symbol'] == asset:
+                            markets = scraper.get('https://api.coinlore.net/api/coin/markets/?id=' + coin['id']).json()
+                            for market in markets:
+                                if market['name'] == 'Binance' and market['quote'] == 'USDT':
+                                    price = float(market['price'])
+                # Get price for stock asset
+                if asset_type == 'stock':
+                    price = float(scraper.get(f'https://api.wsj.net/api/dylan/quotes/v2/comp/quoteByDialect?dialect=official&needed=CompositeTrading|BluegrassChannels&MaxInstrumentMatches=1&accept=application/json&EntitlementToken=cecc4267a0194af89ca343805a3e57af&ckey=cecc4267a0&dialects=Charting&id=Stock-US-{asset}%2CStock-US-LIVE%2CStock-US-ADIL%2CCryptoCurrency-US-BTCUSD%2CStock-US-KALA').json()['InstrumentResponses'][0]['Matches'][0]['CompositeTrading']['Last']['Price']['Value'])
+                return {
+                    'data': price,
+                    'msg': 'success'
+                }
+            except:
+                time.sleep(3)
+        raise TimeoutError(f'Failed to fetch price for {asset}')
+    except Exception as e:
+        error = {
+            'data': {
+                'file': 'indicators.py',
+                'function': 'price',
+                'raise_exception': str(e)
+            },
+            'msg': 'error'
+        }
+        config.log_error(json.dumps(error))
+        return error
         
 def db_price(asset):
     """
