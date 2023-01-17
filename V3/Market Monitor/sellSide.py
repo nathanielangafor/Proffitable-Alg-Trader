@@ -4,6 +4,7 @@ import time
 from datetime import datetime
 from multiprocessing import active_children, Process
 import time
+import asyncio 
 
 # Append the 'Analysis/Technical' folder to path and import the needed module
 sys.path.append('Analysis/Technical')
@@ -95,7 +96,7 @@ def make_decision(asset_data):
             break
     # Update data_log with current asset price
     data_log['asset_price'] = asset_price
-    if orderManager.handle_order(data_log)['msg'] == 'success':
+    if asyncio.run(orderManager.handle_order(data_log))['msg'] == 'success':
         # Update status to success (0)  
         data_log['status'] = 0
         # Update the side, type, and action_price of the asset

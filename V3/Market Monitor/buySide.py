@@ -3,6 +3,7 @@ import time
 from datetime import datetime
 from multiprocessing import active_children, Process
 import time
+import asyncio
 
 # Append the 'Analysis' folder to path and import the needed module
 sys.path.append('Analysis')
@@ -33,8 +34,8 @@ def make_decision(asset_data, gate_criteria):
     now = datetime.now() 
     human_readable_time = now.strftime('%Y-%m-%d %H:%M:%S')        
     # List of gate functions to check for trades
-    gate_set1 = []
-    gate_set2 = []
+    gate_set1 = [gates.macd_gate, gates.rsi_gate, gates.cci_gate, gates.trend_gate, gates.momentum_gate]
+    gate_set2 = [gates.ichimoku_gate, gates.ema_gate, gates.bollinger_gate, gates.cloud_gate]
     # Get direction of trade attempt
     order_type = gates.direction_gate(df)['attempting']
     # Assume that buy is true until proven otherwise
@@ -69,7 +70,7 @@ def make_decision(asset_data, gate_criteria):
     data_log['decision'] = buy
     # Confirm that position can be opened (long crypto, short crypto, long stock)
     if buy and not (order_type == 'short' and asset_data['asset_type'] == 'stock'):
-        if orderManager.handle_order(data_log)['msg'] == 'success':
+        if asyncio.run(orderManager.handle_order(data_log))['msg'] == 'success':
             # Update status to success (0)  
             data_log['status'] = 0
             # Update the side, type, and action_price of the asset
