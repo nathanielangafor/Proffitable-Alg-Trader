@@ -4,7 +4,7 @@
 root
 ├── Analysis
 │   ├── Fundamental
-│   │   └── quantitative.py
+│   │   └── quantGates.py
 │   ├── Technical
 │   │   └── indicators.py
 │   └── gates.py
